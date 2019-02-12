@@ -7,6 +7,7 @@ pygame.init()
 FPS = 8
 step = 10
 score = 0
+level_n = 0
 Width = 770
 Height = 890
 d_w = 40
@@ -78,36 +79,16 @@ class Tile(pygame.sprite.Sprite):
             image = pygame.Surface((40, 40), pygame.SRCALPHA, 32)
             r = 4
             pygame.draw.circle(image, pygame.Color("yellow"), (4, 4), 4)
-            self.rect = pygame.Rect(x, y, 4, 4)
+            self.rect = pygame.Rect(x, y, 10, 10)
             self.rect.x = d_w * x + 20 - r
             self.rect.y = d_h * y + 20 - r
-        if tile_type == 'wall':
-            image = pygame.Surface((40, 40), pygame.SRCALPHA, 32)
-            r = 4
-            pygame.draw.rect(image, pygame.Color("white"), (0, 0, 40, 40))
-            self.rect = pygame.Rect(x, y, 40, 40)
-            self.rect.x = d_w * x
-            self.rect.y = d_h * y
         if tile_type == 'energizer':
             image = pygame.Surface((40, 40), pygame.SRCALPHA, 32)
             r = 9
             pygame.draw.circle(image, pygame.Color("white"), (9, 9), 9)
-            self.rect = pygame.Rect(x, y, 40, 40)
+            self.rect = pygame.Rect(x, y, 20, 20)
             self.rect.x = d_w * x + 20 - r
             self.rect.y = d_h * y + 20 - r
-        self.image = image
-
-
-class Wall(pygame.sprite.Sprite):
-    def __init__(self, x, y):
-        super().__init__(wall_group)
-        image = pygame.Surface((40, 40), pygame.SRCALPHA, 32)
-        pygame.draw.rect(image, pygame.Color("white"), (0, 0, 40, 40))
-        self.rect = pygame.Rect(x, y, 40, 40)
-        self.x = x
-        self.y = y
-        self.rect.x = d_w * x
-        self.rect.y = d_h * y
         self.image = image
 
 
@@ -139,14 +120,18 @@ class Player(pygame.sprite.Sprite):
             for i in food:
                 if i.type == 'pound':
                     global score
-                    score += 1
+                    score += 10
                 elif i.type == 'energizer':
                     global mode
+                    score += 50
                     mode = ['rush', 'scare']
 
     def uppdate_pos(self):
         if self.vector == 0:
-            self.x = self.rect.x // d_w
+            if level[self.y][self.rect.x // d_w + 1] == 'P':
+                self.x = 1
+            else:
+                self.x = self.rect.x // d_w
             if level[self.y][self.rect.x // d_w + 1] == '/':
                 self.fl = False
         elif self.vector == 90:
@@ -154,7 +139,10 @@ class Player(pygame.sprite.Sprite):
             if level[self.rect.y // d_w - 1][self.x] == '/':
                 self.fl = False
         elif self.vector == 180:
-            self.x = self.rect.x // d_w
+            if level[self.y][self.rect.x // d_w - 1] == 'P':
+                self.x = 17
+            else:
+                self.x = self.rect.x // d_w
             if level[self.y][self.rect.x // d_w - 1] == '/':
                 self.fl = False
         elif self.vector == 270:
@@ -164,10 +152,12 @@ class Player(pygame.sprite.Sprite):
         self.rect.topleft = (self.x * d_w + 1, self.y * d_h + 1)
 
     def uppdate_vector(self, vector1=None):
+        fl = False
         if vector1 == None:
+            fl = True
             vector1 = self.vector1
         self.vector1 = vector1
-        if self.vector1 != self.vector:
+        if self.vector1 != self.vector and (fl or not self.fl):
             if self.vector1 == 0 and level[self.y][self.x + 1] != '/':
                 self.fl = True
                 self.ticks = ticks
@@ -192,8 +182,6 @@ def generate_level(level):
         for x in range(len(level[y])):
             if level[y][x] == '.':
                 Tile('pound', x, y)
-            if level[y][x]:
-                Wall(x, y)
             if level[y][x] == 'e':
                 Tile('energizer', x, y)
             elif level[y][x] == '@':
@@ -201,6 +189,7 @@ def generate_level(level):
     return new_player, x, y
 
 
+lives = ['pac-man2.png', 'pac-man2.png', 'pac-man2.png', 'pac-man2.png']
 mode = ['stabil', 'go']
 ticks = 0
 secund = 0
@@ -210,7 +199,15 @@ running = True
 pygame.display.flip()
 all_sprites.draw(screen)
 while running:
+    '''if len(lives) > 0 and kill_event:
+        del lives[-1]
+    else:
+        f1 = pygame.font.SysFont('serif', 30)
+        text1 = f1.render("Game over", 0, (255, 255, 0))
+        screen.blit(text1, (300, 680))
+        running_level = False'''
     player, width, height = generate_level(level)
+    level_n += 1
     running_level = True
     while running_level:
         if len(tiles_group) == 0:
@@ -246,10 +243,35 @@ while running:
         if player.fl:
             player.update()
         player_group.draw(screen)
+
+        f1 = pygame.font.SysFont('serif', 30)
+        text1 = f1.render("Score: " + str(score), 0, (255, 255, 0))
+        screen.blit(text1, (50, 20))
+
+        f2 = pygame.font.SysFont('serif', 75)
+        text2 = f2.render("LEVEL " + str(level_n), 0, (255, 255, 0))
+        screen.blit(text2, (250, 30))
+
+        lives_group = pygame.sprite.Group()
+        for x in range(len(lives)):
+            sprite = pygame.sprite.Sprite()
+            sprite.image = load_image(lives[x])
+            sprite.rect = sprite.image.get_rect()
+            sprite.rect.topleft = (600 + x * 40, 20)
+            lives_group.add(sprite)
+
+        sprite = pygame.sprite.Sprite()
+        sprite.image=pygame.Surface((40, 5), pygame.SRCALPHA, 32)
+        pygame.draw.rect(sprite.image, pygame.Color("blue"), (0, 0, 40, 5))
+        sprite.rect = sprite.image.get_rect()
+        sprite.rect.topleft = (600 + x * 40, 60)
+        lives_group.add(sprite)
+
+        lives_group.draw(screen)
+
         time()
         clock.tick(FPS)
         pygame.display.flip()
-    wall_group = pygame.sprite.Group()
     all_sprites = pygame.sprite.Group()
     tiles_group = pygame.sprite.Group()
     player_group = pygame.sprite.Group()
