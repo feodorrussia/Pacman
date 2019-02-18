@@ -382,6 +382,94 @@ class Inky(pygame.sprite.Sprite):
                     self.fl = True
 
 
+class Clyde(pygame.sprite.Sprite):
+    def __init__(self, start_score=0):
+        super().__init__(goosts_group)
+        self.image = load_image('Clyde.png')
+        self.rect = pygame.Rect(9, 11, 38, 38)
+        self.vector = 180
+        self.run = False
+        self.vectors = list(range(2, -3, -1))
+        self.ticks = 180
+        self.start_score = start_score
+        self.x = 9
+        self.y = 11
+        self.fl = True
+        self.rect.x = d_w * self.x + 1
+        self.rect.y = d_h * self.y + 1
+
+    def update(self):
+        if self.vector == 180:
+            self.rect.x -= step
+        if self.vector == 0:
+            self.rect.x += step
+        if self.vector == 90:
+            self.rect.y -= step
+        if self.vector == 270:
+            self.rect.y += step
+
+    def uppdate_pos(self):
+        if self.vector == 0:
+            if level[self.y][self.rect.x // d_w + 1] == 'P':
+                self.x = 1
+            else:
+                self.x = self.rect.x // d_w
+            if level[self.y][self.rect.x // d_w + 1] == '/':
+                self.fl = False
+        elif self.vector == 90:
+            self.y = self.rect.y // d_w
+            if level[self.rect.y // d_w - 1][self.x] == '/':
+                self.fl = False
+        elif self.vector == 180:
+            if level[self.y][self.rect.x // d_w - 1] == 'P':
+                self.x = 17
+            else:
+                self.x = self.rect.x // d_w
+            if level[self.y][self.rect.x // d_w - 1] == '/':
+                self.fl = False
+        elif self.vector == 270:
+            self.y = self.rect.y // d_w
+            if level[self.rect.y // d_w + 1][self.x] == '/':
+                self.fl = False
+        self.rect.topleft = (self.x * d_w + 1, self.y * d_h + 1)
+
+    def uppdate_vector(self):
+        if score - self.start_score < 15 * pound_score and not self.run:
+            if not self.fl:
+                self.vector = (180 + self.vector) % 360
+                self.fl = True
+        if score - self.start_score == 15 * pound_score and not self.run:
+            self.y = 9
+            self.rect.y = 9 * d_h + 1
+            self.run = True
+        if self.run:
+            if self.vector == 90 or self.vector == 270:
+                if self.fl:
+                    vector = rand([0, 180, self.vector])
+                    while not cor_pos(self, vector):
+                        vector = rand([0, self.vector, 180])
+                    self.vector = vector
+                else:
+                    vector = rand([0, 180])
+                    while not cor_pos(self, vector):
+                        print(self.vector)
+                        vector = rand([0, 180])
+                    self.vector = vector
+                    self.fl = True
+            elif self.vector == 0 or self.vector == 180:
+                if self.fl:
+                    vector = rand([90, 270, self.vector])
+                    while not cor_pos(self, vector):
+                        vector = rand([90, self.vector, 270])
+                    self.vector = vector
+                else:
+                    vector = rand([90, 270])
+                    while not cor_pos(self, vector):
+                        vector = rand([90, 270])
+                    self.vector = vector
+                    self.fl = True
+
+
 class Player(pygame.sprite.Sprite):
     def __init__(self, x=9, y=17):
         super().__init__(player_group)
@@ -497,6 +585,7 @@ while running:
     blinky = Blinky()
     pinky = Pinky(score)
     inky = Inky(score)
+    clyde=Clyde(score)
     level_n += 1
     running_level = True
     kill_event = False
@@ -507,6 +596,8 @@ while running:
             goosts_group = pygame.sprite.Group()
             blinky = Blinky()
             pinky = Pinky(score)
+            inky = Inky(score)
+            clyde = Clyde(score)
             player = Player()
             del lives[-1]
         elif len(lives) == 1 and kill_event:
@@ -546,6 +637,10 @@ while running:
             inky.uppdate_pos()
             inky.uppdate_vector()
             inky.uppdate_pos()
+        if (ticks + secund * FPS + minute * 60 * FPS) % 4 == clyde.ticks % 4:
+            clyde.uppdate_pos()
+            clyde.uppdate_vector()
+            clyde.uppdate_pos()
         if ticks % 2 == 0:
             player.image = load_image('pac-man1.png')
         elif ticks % 2 == 1:
@@ -565,6 +660,8 @@ while running:
             pinky.update()
         if inky.fl:
             inky.update()
+        if clyde.fl:
+            clyde.update()
         if pygame.sprite.spritecollideany(player, goosts_group):
             kill_event = True
         player_group.draw(screen)
