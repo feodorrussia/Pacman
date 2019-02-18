@@ -8,6 +8,7 @@ pygame.init()
 FPS = 8
 step = 10
 score = 0
+pound_score = 15
 level_n = 0
 Width = 770
 Height = 890
@@ -185,7 +186,6 @@ class Blinky(pygame.sprite.Sprite):
             else:
                 vector = rand([0, 180])
                 while not cor_pos(self, vector):
-                    print(self.vector)
                     vector = rand([0, 180])
                 self.vector = vector
                 self.fl = True
@@ -203,8 +203,99 @@ class Blinky(pygame.sprite.Sprite):
                 self.fl = True
 
 
+class Pinky(pygame.sprite.Sprite):
+    def __init__(self,start_score=0):
+        super().__init__(goosts_group)
+        self.image = load_image('Pinky.png')
+        self.rect = pygame.Rect(9, 11, 38, 38)
+        self.vector = 180
+        self.run = False
+        self.vectors = list(range(2, -3, -1))
+        self.ticks = 0
+        self.start_score=start_score
+        self.x = 9
+        self.y = 11
+        self.fl = True
+        self.rect.x = d_w * self.x + 1
+        self.rect.y = d_h * self.y + 1
+
+    def update(self):
+        if self.vector == 180:
+            self.rect.x -= step
+        if self.vector == 0:
+            self.rect.x += step
+        if self.vector == 90:
+            self.rect.y -= step
+        if self.vector == 270:
+            self.rect.y += step
+        if pygame.sprite.spritecollideany(self, player_group):
+            food = pygame.sprite.spritecollide(self, tiles_group, True)
+            '''killing()'''
+
+    def uppdate_pos(self):
+        if self.vector == 0:
+            if level[self.y][self.rect.x // d_w + 1] == 'P':
+                self.x = 1
+            else:
+                self.x = self.rect.x // d_w
+            if level[self.y][self.rect.x // d_w + 1] == '/':
+                self.fl = False
+        elif self.vector == 90:
+            self.y = self.rect.y // d_w
+            if level[self.rect.y // d_w - 1][self.x] == '/':
+                self.fl = False
+        elif self.vector == 180:
+            if level[self.y][self.rect.x // d_w - 1] == 'P':
+                self.x = 17
+            else:
+                self.x = self.rect.x // d_w
+            if level[self.y][self.rect.x // d_w - 1] == '/':
+                self.fl = False
+        elif self.vector == 270:
+            self.y = self.rect.y // d_w
+            if level[self.rect.y // d_w + 1][self.x] == '/':
+                self.fl = False
+        self.rect.topleft = (self.x * d_w + 1, self.y * d_h + 1)
+
+    def uppdate_vector(self):
+        if score-self.start_score < 5 * pound_score and not self.run:
+            if not self.fl:
+                self.vector = (180 + self.vector) % 360
+                self.fl = True
+        if score-self.start_score == 5 * pound_score and not self.run:
+            self.y = 9
+            self.rect.y = 9 * d_h + 1
+            self.run = True
+        if self.run:
+            if self.vector == 90 or self.vector == 270:
+                if self.fl:
+                    vector = rand([0, 180, self.vector])
+                    while not cor_pos(self, vector):
+                        vector = rand([0, self.vector, 180])
+                    self.vector = vector
+                else:
+                    vector = rand([0, 180])
+                    while not cor_pos(self, vector):
+                        print(self.vector)
+                        vector = rand([0, 180])
+                    self.vector = vector
+                    self.fl = True
+            if self.vector == 0 or self.vector == 180:
+                if self.fl:
+                    vector = rand([90, 270, self.vector])
+                    while not cor_pos(self, vector):
+                        vector = rand([90, self.vector, 270])
+                    self.vector = vector
+                else:
+                    vector = rand([90, 270])
+                    while not cor_pos(self, vector):
+                        vector = rand([90, 270])
+                    self.vector = vector
+                    self.fl = True
+
+
 class Player(pygame.sprite.Sprite):
-    def __init__(self, x, y):
+    def __init__(self, x=9, y=17):
         super().__init__(player_group)
         self.image = load_image('pac-man1.png')
         self.rect = pygame.Rect(x, y, 38, 38)
@@ -231,10 +322,10 @@ class Player(pygame.sprite.Sprite):
             for i in food:
                 if i.type == 'pound':
                     global score
-                    score += 10
+                    score += pound_score
                 elif i.type == 'energizer':
                     global mode
-                    score += 50
+                    score += pound_score * 5
                     mode = ['rush', 'scare']
 
     def uppdate_pos(self):
@@ -300,7 +391,7 @@ def generate_level(level):
     return new_player, x, y
 
 
-lives = ['pac-man2.png', 'pac-man2.png', 'pac-man2.png', 'pac-man2.png']
+lives = ['pac-man2.png', 'pac-man2.png', 'pac-man2.png']
 mode = ['stabil', 'go']
 ticks = 0
 secund = 0
@@ -310,24 +401,36 @@ running = True
 pygame.display.flip()
 all_sprites.draw(screen)
 while running:
-    '''if len(lives) > 0 and kill_event:
-        del lives[-1]
-    else:
-        f1 = pygame.font.SysFont('serif', 80)
-        text1 = f1.render("Game over", 0, (255, 0, 0))
-        screen.blit(text1, (300, 680))
-        running_level = False'''
+    all_sprites = pygame.sprite.Group()
+    tiles_group = pygame.sprite.Group()
+    player_group = pygame.sprite.Group()
     player, width, height = generate_level(level)
     blinky = Blinky()
+    pinky = Pinky()
     level_n += 1
     running_level = True
+    kill_event = False
     while running_level:
+        if len(lives) > 1 and kill_event:
+            kill_event = False
+            player_group = pygame.sprite.Group()
+            goosts_group = pygame.sprite.Group()
+            blinky = Blinky()
+            pinky = Pinky(score)
+            player = Player()
+            del lives[-1]
+        elif len(lives) == 1 and kill_event:
+            f3 = pygame.font.SysFont('serif', 80)
+            text3 = f1.render("Game over", 0, (255, 0, 0))
+            screen.blit(text3, (300, 300))
+            running=False
+            break
         if len(tiles_group) == 0:
-            running_level = False
+            break
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running_level = False
                 running = False
+                break
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     player.uppdate_vector(180)
@@ -345,6 +448,10 @@ while running:
             blinky.uppdate_pos()
             blinky.uppdate_vector()
             blinky.uppdate_pos()
+        if (ticks + secund * FPS + minute * 60 * FPS) % 4 == pinky.ticks % 4:
+            pinky.uppdate_pos()
+            pinky.uppdate_vector()
+            pinky.uppdate_pos()
         if ticks % 2 == 0:
             player.image = load_image('pac-man1.png')
         elif ticks % 2 == 1:
@@ -360,6 +467,10 @@ while running:
             player.update()
         if blinky.fl:
             blinky.update()
+        if pinky.fl:
+            pinky.update()
+        if pygame.sprite.spritecollideany(player, goosts_group):
+            kill_event = True
         player_group.draw(screen)
         goosts_group.draw(screen)
 
@@ -391,6 +502,3 @@ while running:
         time()
         clock.tick(FPS)
         pygame.display.flip()
-    all_sprites = pygame.sprite.Group()
-    tiles_group = pygame.sprite.Group()
-    player_group = pygame.sprite.Group()

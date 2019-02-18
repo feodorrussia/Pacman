@@ -3,12 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="5c26960f-95de-493f-99d3-74d5a7a80103" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/Game.py" beforeDir="false" afterPath="$PROJECT_DIR$/Game.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Blinky.png" beforeDir="false" afterPath="$PROJECT_DIR$/data/Blinky.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Clyde.png" beforeDir="false" afterPath="$PROJECT_DIR$/data/Clyde.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Inky.png" beforeDir="false" afterPath="$PROJECT_DIR$/data/Inky.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Pinky.png" beforeDir="false" afterPath="$PROJECT_DIR$/data/Pinky.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/rush1.png" beforeDir="false" afterPath="$PROJECT_DIR$/data/rush1.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/rush2.png" beforeDir="false" afterPath="$PROJECT_DIR$/data/rush2.png" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -21,8 +15,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Game.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="456">
-              <caret line="181" column="25" selection-start-line="181" selection-start-column="25" selection-end-line="181" selection-end-column="25" />
+            <state relative-caret-position="1439">
+              <caret line="509" column="28" lean-forward="true" selection-start-line="509" selection-start-column="28" selection-end-line="509" selection-end-column="28" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -33,8 +27,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/data/test_level.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="216">
-              <caret line="9" column="10" selection-start-line="9" selection-start-column="10" selection-end-line="9" selection-end-column="10" />
+            <state relative-caret-position="408">
+              <caret line="17" column="10" selection-start-line="17" selection-start-column="10" selection-end-line="17" selection-end-column="10" />
             </state>
           </provider>
         </entry>
@@ -214,15 +208,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/data/test_level.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="216">
-          <caret line="9" column="10" selection-start-line="9" selection-start-column="10" selection-end-line="9" selection-end-column="10" />
+        <state relative-caret-position="408">
+          <caret line="17" column="10" selection-start-line="17" selection-start-column="10" selection-end-line="17" selection-end-column="10" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Game.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="456">
-          <caret line="181" column="25" selection-start-line="181" selection-start-column="25" selection-end-line="181" selection-end-column="25" />
+        <state relative-caret-position="1439">
+          <caret line="509" column="28" lean-forward="true" selection-start-line="509" selection-start-column="28" selection-end-line="509" selection-end-column="28" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
