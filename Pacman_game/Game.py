@@ -1,6 +1,7 @@
 import os
 import sys
 import pygame
+from random import choice as rand
 
 pygame.init()
 
@@ -12,7 +13,6 @@ Width = 770
 Height = 890
 d_w = 40
 d_h = 40
-print()
 
 screen = pygame.display.set_mode((Width, Height))
 clock = pygame.time.Clock()
@@ -21,6 +21,36 @@ clock = pygame.time.Clock()
 def terminate():
     pygame.quit()
     sys.exit()
+
+
+def randomase(vectors):
+    vectors1 = []
+    for i in range(4):
+        vectors1.append(rand(vectors))
+    vectors = vectors1
+
+
+def cor_pos(self, vector):
+    if vector == 0:
+        if level[self.y][self.x + 1] != '/':
+            return True
+        else:
+            return False
+    if vector == 90:
+        if level[self.y - 1][self.x] != '/':
+            return True
+        else:
+            return False
+    if vector == 180:
+        if level[self.y][self.x - 1] != '/':
+            return True
+        else:
+            return False
+    if vector == 270:
+        if level[self.y + 1][self.x] != '/':
+            return True
+        else:
+            return False
 
 
 def time():
@@ -69,6 +99,7 @@ wall_group = pygame.sprite.Group()
 all_sprites = pygame.sprite.Group()
 tiles_group = pygame.sprite.Group()
 player_group = pygame.sprite.Group()
+goosts_group = pygame.sprite.Group()
 
 
 class Tile(pygame.sprite.Sprite):
@@ -90,6 +121,86 @@ class Tile(pygame.sprite.Sprite):
             self.rect.x = d_w * x + 20 - r
             self.rect.y = d_h * y + 20 - r
         self.image = image
+
+
+class Blinky(pygame.sprite.Sprite):
+    def __init__(self, x=9, y=9):
+        super().__init__(goosts_group)
+        self.image = load_image('Blinky.png')
+        self.rect = pygame.Rect(x, y, 38, 38)
+        self.vector = 180
+        self.vectors = list(range(2, -3, -1))
+        self.ticks = 0
+        self.x = 9
+        self.y = 9
+        self.fl = True
+        self.rect.x = d_w * x + 1
+        self.rect.y = d_h * y + 1
+
+    def update(self):
+        if self.vector == 180:
+            self.rect.x -= step
+        if self.vector == 0:
+            self.rect.x += step
+        if self.vector == 90:
+            self.rect.y -= step
+        if self.vector == 270:
+            self.rect.y += step
+        if pygame.sprite.spritecollideany(self, player_group):
+            food = pygame.sprite.spritecollide(self, tiles_group, True)
+            '''killing()'''
+
+    def uppdate_pos(self):
+        if self.vector == 0:
+            if level[self.y][self.rect.x // d_w + 1] == 'P':
+                self.x = 1
+            else:
+                self.x = self.rect.x // d_w
+            if level[self.y][self.rect.x // d_w + 1] == '/':
+                self.fl = False
+        elif self.vector == 90:
+            self.y = self.rect.y // d_w
+            if level[self.rect.y // d_w - 1][self.x] == '/':
+                self.fl = False
+        elif self.vector == 180:
+            if level[self.y][self.rect.x // d_w - 1] == 'P':
+                self.x = 17
+            else:
+                self.x = self.rect.x // d_w
+            if level[self.y][self.rect.x // d_w - 1] == '/':
+                self.fl = False
+        elif self.vector == 270:
+            self.y = self.rect.y // d_w
+            if level[self.rect.y // d_w + 1][self.x] == '/':
+                self.fl = False
+        self.rect.topleft = (self.x * d_w + 1, self.y * d_h + 1)
+
+    def uppdate_vector(self, vector1=None):
+        if self.vector == 90 or self.vector == 270:
+            if self.fl:
+                vector = rand([0, 180, self.vector])
+                while not cor_pos(self, vector):
+                    vector = rand([0, self.vector, 180])
+                self.vector = vector
+            else:
+                vector = rand([0, 180])
+                while not cor_pos(self, vector):
+                    print(self.vector)
+                    vector = rand([0, 180])
+                self.vector = vector
+                self.fl = True
+        if self.vector == 0 or self.vector == 180:
+            if self.fl:
+                vector = rand([90, 270, self.vector])
+                while not cor_pos(self, vector):
+                    vector = rand([90, self.vector, 270])
+                self.vector = vector
+            else:
+                vector = rand([90, 270])
+                while not cor_pos(self, vector):
+                    vector = rand([90, 270])
+                self.vector = vector
+                self.fl = True
 
 
 class Player(pygame.sprite.Sprite):
@@ -202,11 +313,12 @@ while running:
     '''if len(lives) > 0 and kill_event:
         del lives[-1]
     else:
-        f1 = pygame.font.SysFont('serif', 30)
-        text1 = f1.render("Game over", 0, (255, 255, 0))
+        f1 = pygame.font.SysFont('serif', 80)
+        text1 = f1.render("Game over", 0, (255, 0, 0))
         screen.blit(text1, (300, 680))
         running_level = False'''
     player, width, height = generate_level(level)
+    blinky = Blinky()
     level_n += 1
     running_level = True
     while running_level:
@@ -229,6 +341,10 @@ while running:
             player.uppdate_pos()
             player.uppdate_vector()
             player.uppdate_pos()
+        if (ticks + secund * FPS + minute * 60 * FPS) % 4 == blinky.ticks % 4:
+            blinky.uppdate_pos()
+            blinky.uppdate_vector()
+            blinky.uppdate_pos()
         if ticks % 2 == 0:
             player.image = load_image('pac-man1.png')
         elif ticks % 2 == 1:
@@ -242,7 +358,10 @@ while running:
         all_sprites.draw(screen)
         if player.fl:
             player.update()
+        if blinky.fl:
+            blinky.update()
         player_group.draw(screen)
+        goosts_group.draw(screen)
 
         f1 = pygame.font.SysFont('serif', 30)
         text1 = f1.render("Score: " + str(score), 0, (255, 255, 0))
@@ -261,7 +380,7 @@ while running:
             lives_group.add(sprite)
 
         sprite = pygame.sprite.Sprite()
-        sprite.image=pygame.Surface((40, 5), pygame.SRCALPHA, 32)
+        sprite.image = pygame.Surface((40, 5), pygame.SRCALPHA, 32)
         pygame.draw.rect(sprite.image, pygame.Color("blue"), (0, 0, 40, 5))
         sprite.rect = sprite.image.get_rect()
         sprite.rect.topleft = (600 + x * 40, 60)
