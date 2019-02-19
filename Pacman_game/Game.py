@@ -572,7 +572,8 @@ secund = 0
 minute = 0
 wait = 0
 level = load_level('test_level.txt')
-running = True
+running = False
+running_bonus = True
 pygame.display.flip()
 all_sprites.draw(screen)
 deith = False
@@ -599,8 +600,13 @@ while running:
         f3 = pygame.font.SysFont('serif', 80)
         text3 = f3.render("You win!!!", 0, (255, 0, 0))
         screen.blit(text3, (200, 450))
+        f4 = pygame.font.SysFont('serif', 50)
+        text4 = f4.render("Your score: " + str(score), 0, (255, 255, 0))
+        screen.blit(text4, (250, 540))
         pygame.display.flip()
         running_level = False
+        wait = 3 * FPS
+        running_bonus = True
     if level_n == 2:
         step_g = 10
     if level_n == 3:
@@ -626,6 +632,9 @@ while running:
             f3 = pygame.font.SysFont('serif', 80)
             text3 = f3.render("Game over", 0, (255, 0, 0))
             screen.blit(text3, (200, 450))
+            f4 = pygame.font.SysFont('serif', 50)
+            text4 = f4.render("Your score: " + str(score), 0, (255, 255, 0))
+            screen.blit(text4, (250, 540))
             pygame.display.flip()
             deith = True
             break
@@ -727,6 +736,165 @@ while running:
         f2 = pygame.font.SysFont('serif', 75)
         text2 = f2.render("LEVEL " + str(level_n), 0, (255, 255, 0))
         screen.blit(text2, (250, 30))
+
+        lives_group = pygame.sprite.Group()
+        for x in range(len(lives)):
+            sprite = pygame.sprite.Sprite()
+            sprite.image = load_image(lives[x])
+            sprite.rect = sprite.image.get_rect()
+            sprite.rect.topleft = (600 + x * 40, 20)
+            lives_group.add(sprite)
+
+        sprite = pygame.sprite.Sprite()
+        sprite.image = pygame.Surface((40, 5), pygame.SRCALPHA, 32)
+        pygame.draw.rect(sprite.image, pygame.Color("blue"), (0, 0, 40, 5))
+        sprite.rect = sprite.image.get_rect()
+        sprite.rect.topleft = (600 + x * 40, 60)
+        lives_group.add(sprite)
+
+        lives_group.draw(screen)
+
+        time()
+        clock.tick(FPS)
+        pygame.display.flip()
+
+    all_sprites = pygame.sprite.Group()
+    tiles_group = pygame.sprite.Group()
+    player_group = pygame.sprite.Group()
+    goosts_group = pygame.sprite.Group()
+    clock.tick(FPS)
+while running_bonus:
+    all_sprites.draw(screen)
+    player, width, height = generate_level(level)
+    blinky = Blinky(ticks)
+    pinky = Pinky(ticks, score)
+    inky = Inky(ticks, score)
+    clyde = Clyde(ticks, score)
+    running_level = True
+    kill_event = False
+    if wait != 0:
+        clock.tick(FPS)
+        wait -= 1
+        continue
+    if deith:
+        running_level = False
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running_bonus = False
+    elif len(tiles_group) == 0:
+        f3 = pygame.font.SysFont('serif', 80)
+        text3 = f3.render("You're the best!!!", 0, (255, 0, 0))
+        screen.blit(text3, (120, 450))
+        f4 = pygame.font.SysFont('serif', 50)
+        text4 = f4.render("Your score: " + str(score), 0, (255, 255, 0))
+        screen.blit(text4, (250, 540))
+        pygame.display.flip()
+        running_level = False
+    step_p = 5
+    step_g = 10
+    while running_level:
+        if wait != 0:
+            clock.tick(FPS)
+            wait -= 1
+            continue
+        if len(lives) > 1 and kill_event:
+            kill_event = False
+            player_group = pygame.sprite.Group()
+            goosts_group = pygame.sprite.Group()
+            blinky = Blinky(ticks)
+            pinky = Pinky(ticks, score)
+            inky = Inky(ticks, score)
+            clyde = Clyde(ticks, score)
+            player = Player()
+            del lives[-1]
+            wait = 2 * FPS
+            continue
+        elif len(lives) == 1 and kill_event:
+            f3 = pygame.font.SysFont('serif', 80)
+            text3 = f3.render("Game over", 0, (255, 0, 0))
+            screen.blit(text3, (200, 450))
+            f4 = pygame.font.SysFont('serif', 50)
+            text4 = f4.render("Your score: " + str(score), 0, (255, 255, 0))
+            screen.blit(text4, (250, 540))
+            pygame.display.flip()
+            deith = True
+            break
+        if len(tiles_group) == 0:
+            wait = 2 * FPS
+            player.k = 1
+            mode = ['stabil', 'go']
+            break
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running_bonus = False
+                running_level = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    player.uppdate_vector(180)
+                if event.key == pygame.K_RIGHT:
+                    player.uppdate_vector(0)
+                if event.key == pygame.K_UP:
+                    player.uppdate_vector(90)
+                if event.key == pygame.K_DOWN:
+                    player.uppdate_vector(270)
+        if (ticks + secund * FPS + minute * 60 * FPS) % (40 // step_p) == player.ticks % (
+                40 // step_p):
+            player.uppdate_pos()
+            player.uppdate_vector()
+            player.uppdate_pos()
+        if (ticks + secund * FPS + minute * 60 * FPS) % (40 // step_g) == blinky.ticks % (
+                40 // step_g):
+            blinky.uppdate_pos()
+            blinky.uppdate_vector()
+            blinky.uppdate_pos()
+        if (ticks + secund * FPS + minute * 60 * FPS) % (40 // step_g) == pinky.ticks % (
+                40 // step_g):
+            pinky.uppdate_pos()
+            pinky.uppdate_vector()
+            pinky.uppdate_pos()
+        if (ticks + secund * FPS + minute * 60 * FPS) % (40 // step_g) == inky.ticks % (
+                40 // step_g):
+            inky.uppdate_pos()
+            inky.uppdate_vector()
+            inky.uppdate_pos()
+        if (ticks + secund * FPS + minute * 60 * FPS) % (40 // step_g) == clyde.ticks % (
+                40 // step_g):
+            clyde.uppdate_pos()
+            clyde.uppdate_vector()
+            clyde.uppdate_pos()
+        if ticks % 4 <= 1:
+            player.image = load_image('pac-man1.png')
+        elif ticks % 4 > 1:
+            player.image = load_image('pac-man2.png')
+        if player.vector != 180:
+            player.image = pygame.transform.rotate(player.image, player.vector)
+        else:
+            player.image = pygame.transform.flip(player.image, True, False)
+        screen.fill((0, 0, 0))
+        screen_sprite.draw(screen)
+        all_sprites.draw(screen)
+        if player.fl:
+            player.update()
+        if blinky.fl:
+            blinky.update()
+        if pinky.fl:
+            pinky.update()
+        if inky.fl:
+            inky.update()
+        if clyde.fl:
+            clyde.update()
+        if pygame.sprite.spritecollideany(player, goosts_group):
+            kill_event = True
+        player_group.draw(screen)
+        goosts_group.draw(screen)
+
+        f1 = pygame.font.SysFont('serif', 30)
+        text1 = f1.render("Score: " + str(score), 0, (255, 255, 0))
+        screen.blit(text1, (50, 20))
+
+        f2 = pygame.font.SysFont('serif', 60)
+        text2 = f2.render("BONUS LEVEL", 0, (255, 0, 0))
+        screen.blit(text2, (185, 50))
 
         lives_group = pygame.sprite.Group()
         for x in range(len(lives)):
