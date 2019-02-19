@@ -574,15 +574,25 @@ minute = 0
 wait = 0
 level = load_level('test_level.txt')
 running = True
+end_game = False
+pause = False
 running_bonus = False
 pygame.display.flip()
 all_sprites.draw(screen)
 deith = False
 while running:
+    if pause:
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                pause = False
+        continue
     if wait != 0:
         clock.tick(FPS)
         wait -= 1
         continue
+    if wait == 0:
+        if end_game:
+            break
     player, width, height = generate_level(level)
     blinky = Blinky(ticks)
     pinky = Pinky(ticks, score)
@@ -607,12 +617,21 @@ while running:
         pygame.display.flip()
         running_level = False
         wait = 3 * FPS
+        end_game = True
         running_bonus = True
     if level_n == 2:
         step_g = 10
     if level_n == 3:
         step_p = 5
     while running_level:
+        if pause:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                    running_level = False
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                    pause = False
+            continue
         if wait != 0:
             clock.tick(FPS)
             wait -= 1
@@ -637,7 +656,8 @@ while running:
             text4 = f4.render("Your score: " + str(score), 0, (255, 255, 0))
             screen.blit(text4, (250, 540))
             pygame.display.flip()
-            deith = True
+            wait = 3 * FPS
+            end_game = True
             break
         if len(tiles_group) == 0:
             wait = 2 * FPS
@@ -648,6 +668,8 @@ while running:
             if event.type == pygame.QUIT:
                 running = False
                 running_level = False
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                pause = True
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     player.uppdate_vector(180)
