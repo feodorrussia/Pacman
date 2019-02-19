@@ -572,8 +572,8 @@ secund = 0
 minute = 0
 wait = 0
 level = load_level('test_level.txt')
-running = False
-running_bonus = True
+running = True
+running_bonus = False
 pygame.display.flip()
 all_sprites.draw(screen)
 deith = False
