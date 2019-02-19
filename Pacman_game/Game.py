@@ -496,6 +496,7 @@ class Player(pygame.sprite.Sprite):
                     global mode
                     score += pound_score * 5
                     mode = ['rush', 'scare', 10 * FPS]
+                    self.k = 1
         if mode[0] == 'rush' and pygame.sprite.spritecollideany(self, goosts_group):
             die_goost = pygame.sprite.spritecollide(self, goosts_group, True)
             for i in die_goost:
@@ -578,6 +579,10 @@ pygame.display.flip()
 all_sprites.draw(screen)
 deith = False
 while running:
+    if wait != 0:
+        clock.tick(FPS)
+        wait -= 1
+        continue
     player, width, height = generate_level(level)
     blinky = Blinky(ticks)
     pinky = Pinky(ticks, score)
@@ -585,10 +590,6 @@ while running:
     clyde = Clyde(ticks, score)
     running_level = True
     kill_event = False
-    if wait != 0:
-        clock.tick(FPS)
-        wait -= 1
-        continue
     if deith:
         running_level = False
         for event in pygame.event.get():
