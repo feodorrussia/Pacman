@@ -577,6 +577,13 @@ while running:
     clyde = Clyde(ticks, score)
     running_level = True
     kill_event = False
+    if deith:
+        running_level = False
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+    else:
+        level_n += 1
     if level_n == 4:
         f3 = pygame.font.SysFont('serif', 80)
         text3 = f3.render("You win!!!", 0, (255, 0, 0))
@@ -587,13 +594,6 @@ while running:
         step_g = 10
     if level_n == 3:
         step_p = 5
-    if deith:
-        running_level = False
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-    else:
-        level_n += 1
     while running_level:
         if len(lives) > 1 and kill_event:
             kill_event = False
