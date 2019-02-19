@@ -564,6 +564,7 @@ mode = ['stabil', 'go']
 ticks = 0
 secund = 0
 minute = 0
+wait=0
 level = load_level('test_level.txt')
 running = True
 pygame.display.flip()
@@ -577,6 +578,10 @@ while running:
     clyde = Clyde(ticks, score)
     running_level = True
     kill_event = False
+    if wait != 0:
+        clock.tick(FPS)
+        wait -= 1
+        continue
     if deith:
         running_level = False
         for event in pygame.event.get():
@@ -595,6 +600,10 @@ while running:
     if level_n == 3:
         step_p = 5
     while running_level:
+        if wait != 0:
+            clock.tick(FPS)
+            wait -= 1
+            continue
         if len(lives) > 1 and kill_event:
             kill_event = False
             player_group = pygame.sprite.Group()
@@ -605,6 +614,8 @@ while running:
             clyde = Clyde(ticks, score)
             player = Player()
             del lives[-1]
+            wait=2*FPS
+            continue
         elif len(lives) == 1 and kill_event:
             f3 = pygame.font.SysFont('serif', 80)
             text3 = f3.render("Game over", 0, (255, 0, 0))
@@ -613,6 +624,7 @@ while running:
             deith = True
             break
         if len(tiles_group) == 0:
+            wait = 2 * FPS
             break
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -711,3 +723,4 @@ while running:
     tiles_group = pygame.sprite.Group()
     player_group = pygame.sprite.Group()
     goosts_group = pygame.sprite.Group()
+    clock.tick(FPS)
