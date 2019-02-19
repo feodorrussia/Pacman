@@ -125,18 +125,18 @@ class Tile(pygame.sprite.Sprite):
 
 
 class Blinky(pygame.sprite.Sprite):
-    def __init__(self, x=9, y=9):
+    def __init__(self, ticks):
         super().__init__(goosts_group)
         self.image = load_image('Blinky.png')
-        self.rect = pygame.Rect(x, y, 38, 38)
+        self.rect = pygame.Rect(0, 0, 38, 38)
         self.vector = 180
         self.vectors = list(range(2, -3, -1))
-        self.ticks = 0
+        self.ticks = ticks
         self.x = 9
         self.y = 9
         self.fl = True
-        self.rect.x = d_w * x + 1
-        self.rect.y = d_h * y + 1
+        self.rect.x = d_w * self.x + 1
+        self.rect.y = d_h * self.y + 1
 
     def update(self):
         if self.vector == 180:
@@ -204,14 +204,14 @@ class Blinky(pygame.sprite.Sprite):
 
 
 class Pinky(pygame.sprite.Sprite):
-    def __init__(self, start_score=0):
+    def __init__(self, ticks, start_score=0):
         super().__init__(goosts_group)
         self.image = load_image('Pinky.png')
         self.rect = pygame.Rect(9, 11, 38, 38)
         self.vector = 180
         self.run = False
         self.vectors = list(range(2, -3, -1))
-        self.ticks = 0
+        self.ticks = ticks
         self.start_score = start_score
         self.x = 8
         self.y = 11
@@ -259,7 +259,7 @@ class Pinky(pygame.sprite.Sprite):
             if not self.fl:
                 self.vector = (180 + self.vector) % 360
                 self.fl = True
-        if score - self.start_score == 5 * pound_score and not self.run:
+        if score - self.start_score >= 5 * pound_score and not self.run:
             self.y = 9
             self.rect.y = 9 * d_h + 1
             self.run = True
@@ -273,7 +273,6 @@ class Pinky(pygame.sprite.Sprite):
                 else:
                     vector = rand([0, 180])
                     while not cor_pos(self, vector):
-                        print(self.vector)
                         vector = rand([0, 180])
                     self.vector = vector
                     self.fl = True
@@ -292,14 +291,14 @@ class Pinky(pygame.sprite.Sprite):
 
 
 class Inky(pygame.sprite.Sprite):
-    def __init__(self, start_score=0):
+    def __init__(self, ticks, start_score=0):
         super().__init__(goosts_group)
         self.image = load_image('Inky.png')
         self.rect = pygame.Rect(9, 11, 38, 38)
         self.vector = 0
         self.run = False
         self.vectors = list(range(2, -3, -1))
-        self.ticks = 0
+        self.ticks = ticks
         self.start_score = start_score
         self.x = 10
         self.y = 11
@@ -350,7 +349,7 @@ class Inky(pygame.sprite.Sprite):
             if not self.fl:
                 self.vector = (180 + self.vector) % 360
                 self.fl = True
-        if score - self.start_score == 10 * pound_score and not self.run:
+        if score - self.start_score >= 10 * pound_score and not self.run:
             self.y = 9
             self.rect.y = 9 * d_h + 1
             self.run = True
@@ -364,7 +363,6 @@ class Inky(pygame.sprite.Sprite):
                 else:
                     vector = rand([0, 180])
                     while not cor_pos(self, vector):
-                        print(self.vector)
                         vector = rand([0, 180])
                     self.vector = vector
                     self.fl = True
@@ -383,14 +381,14 @@ class Inky(pygame.sprite.Sprite):
 
 
 class Clyde(pygame.sprite.Sprite):
-    def __init__(self, start_score=0):
+    def __init__(self, ticks, start_score=0):
         super().__init__(goosts_group)
         self.image = load_image('Clyde.png')
         self.rect = pygame.Rect(9, 11, 38, 38)
         self.vector = 180
         self.run = False
         self.vectors = list(range(2, -3, -1))
-        self.ticks = 180
+        self.ticks = ticks
         self.start_score = start_score
         self.x = 9
         self.y = 11
@@ -438,7 +436,7 @@ class Clyde(pygame.sprite.Sprite):
             if not self.fl:
                 self.vector = (180 + self.vector) % 360
                 self.fl = True
-        if score - self.start_score == 15 * pound_score and not self.run:
+        if score - self.start_score >= 15 * pound_score and not self.run:
             self.y = 9
             self.rect.y = 9 * d_h + 1
             self.run = True
@@ -452,7 +450,6 @@ class Clyde(pygame.sprite.Sprite):
                 else:
                     vector = rand([0, 180])
                     while not cor_pos(self, vector):
-                        print(self.vector)
                         vector = rand([0, 180])
                     self.vector = vector
                     self.fl = True
@@ -576,35 +573,39 @@ level = load_level('test_level.txt')
 running = True
 pygame.display.flip()
 all_sprites.draw(screen)
+deith=False
 while running:
-    all_sprites = pygame.sprite.Group()
-    tiles_group = pygame.sprite.Group()
-    player_group = pygame.sprite.Group()
-    goosts_group = pygame.sprite.Group()
     player, width, height = generate_level(level)
-    blinky = Blinky()
-    pinky = Pinky(score)
-    inky = Inky(score)
-    clyde=Clyde(score)
+    blinky = Blinky(ticks)
+    pinky = Pinky(ticks, score)
+    inky = Inky(ticks, score)
+    clyde = Clyde(ticks, score)
     level_n += 1
     running_level = True
     kill_event = False
+    if level_n == 4:
+        f3 = pygame.font.SysFont('serif', 80)
+        text3 = f3.render("You win!!!", 0, (255, 0, 0))
+        screen.blit(text3, (300, 300))
+        running_level = False
+    if deith:
+        running_level=False
     while running_level:
         if len(lives) > 1 and kill_event:
             kill_event = False
             player_group = pygame.sprite.Group()
             goosts_group = pygame.sprite.Group()
-            blinky = Blinky()
-            pinky = Pinky(score)
-            inky = Inky(score)
-            clyde = Clyde(score)
+            blinky = Blinky(ticks)
+            pinky = Pinky(ticks, score)
+            inky = Inky(ticks, score)
+            clyde = Clyde(ticks, score)
             player = Player()
             del lives[-1]
         elif len(lives) == 1 and kill_event:
             f3 = pygame.font.SysFont('serif', 80)
-            text3 = f1.render("Game over", 0, (255, 0, 0))
+            text3 = f3.render("Game over", 0, (255, 0, 0))
             screen.blit(text3, (300, 300))
-            running = False
+            deith=True
             break
         if len(tiles_group) == 0:
             break
@@ -695,3 +696,8 @@ while running:
         time()
         clock.tick(FPS)
         pygame.display.flip()
+
+    all_sprites = pygame.sprite.Group()
+    tiles_group = pygame.sprite.Group()
+    player_group = pygame.sprite.Group()
+    goosts_group = pygame.sprite.Group()
