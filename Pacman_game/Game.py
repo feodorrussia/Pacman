@@ -5,8 +5,9 @@ from random import choice as rand
 
 pygame.init()
 
-FPS = 8
-step = 10
+FPS = 16
+step_p = 10
+step_g = 5
 score = 0
 pound_score = 15
 level_n = 0
@@ -140,16 +141,13 @@ class Blinky(pygame.sprite.Sprite):
 
     def update(self):
         if self.vector == 180:
-            self.rect.x -= step
+            self.rect.x -= step_g
         if self.vector == 0:
-            self.rect.x += step
+            self.rect.x += step_g
         if self.vector == 90:
-            self.rect.y -= step
+            self.rect.y -= step_g
         if self.vector == 270:
-            self.rect.y += step
-        if pygame.sprite.spritecollideany(self, player_group):
-            food = pygame.sprite.spritecollide(self, tiles_group, True)
-            '''killing()'''
+            self.rect.y += step_g
 
     def uppdate_pos(self):
         if self.vector == 0:
@@ -221,13 +219,13 @@ class Pinky(pygame.sprite.Sprite):
 
     def update(self):
         if self.vector == 180:
-            self.rect.x -= step
+            self.rect.x -= step_g
         if self.vector == 0:
-            self.rect.x += step
+            self.rect.x += step_g
         if self.vector == 90:
-            self.rect.y -= step
+            self.rect.y -= step_g
         if self.vector == 270:
-            self.rect.y += step
+            self.rect.y += step_g
 
     def uppdate_pos(self):
         if self.vector == 0:
@@ -308,16 +306,13 @@ class Inky(pygame.sprite.Sprite):
 
     def update(self):
         if self.vector == 180:
-            self.rect.x -= step
+            self.rect.x -= step_g
         if self.vector == 0:
-            self.rect.x += step
+            self.rect.x += step_g
         if self.vector == 90:
-            self.rect.y -= step
+            self.rect.y -= step_g
         if self.vector == 270:
-            self.rect.y += step
-        if pygame.sprite.spritecollideany(self, player_group):
-            food = pygame.sprite.spritecollide(self, tiles_group, True)
-            '''killing()'''
+            self.rect.y += step_g
 
     def uppdate_pos(self):
         if self.vector == 0:
@@ -398,13 +393,13 @@ class Clyde(pygame.sprite.Sprite):
 
     def update(self):
         if self.vector == 180:
-            self.rect.x -= step
+            self.rect.x -= step_g
         if self.vector == 0:
-            self.rect.x += step
+            self.rect.x += step_g
         if self.vector == 90:
-            self.rect.y -= step
+            self.rect.y -= step_g
         if self.vector == 270:
-            self.rect.y += step
+            self.rect.y += step_g
 
     def uppdate_pos(self):
         if self.vector == 0:
@@ -483,13 +478,13 @@ class Player(pygame.sprite.Sprite):
 
     def update(self):
         if self.vector == 180:
-            self.rect.x -= step
+            self.rect.x -= step_p
         if self.vector == 0:
-            self.rect.x += step
+            self.rect.x += step_p
         if self.vector == 90:
-            self.rect.y -= step
+            self.rect.y -= step_p
         if self.vector == 270:
-            self.rect.y += step
+            self.rect.y += step_p
         if pygame.sprite.spritecollideany(self, all_sprites):
             food = pygame.sprite.spritecollide(self, tiles_group, True)
             for i in food:
@@ -573,23 +568,32 @@ level = load_level('test_level.txt')
 running = True
 pygame.display.flip()
 all_sprites.draw(screen)
-deith=False
+deith = False
 while running:
     player, width, height = generate_level(level)
     blinky = Blinky(ticks)
     pinky = Pinky(ticks, score)
     inky = Inky(ticks, score)
     clyde = Clyde(ticks, score)
-    level_n += 1
     running_level = True
     kill_event = False
     if level_n == 4:
         f3 = pygame.font.SysFont('serif', 80)
         text3 = f3.render("You win!!!", 0, (255, 0, 0))
-        screen.blit(text3, (300, 300))
+        screen.blit(text3, (200, 450))
+        pygame.display.flip()
         running_level = False
+    if level_n == 2:
+        step_g = 10
+    if level_n == 3:
+        step_p = 5
     if deith:
-        running_level=False
+        running_level = False
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+    else:
+        level_n += 1
     while running_level:
         if len(lives) > 1 and kill_event:
             kill_event = False
@@ -604,8 +608,9 @@ while running:
         elif len(lives) == 1 and kill_event:
             f3 = pygame.font.SysFont('serif', 80)
             text3 = f3.render("Game over", 0, (255, 0, 0))
-            screen.blit(text3, (300, 300))
-            deith=True
+            screen.blit(text3, (200, 450))
+            pygame.display.flip()
+            deith = True
             break
         if len(tiles_group) == 0:
             break
@@ -622,29 +627,34 @@ while running:
                     player.uppdate_vector(90)
                 if event.key == pygame.K_DOWN:
                     player.uppdate_vector(270)
-        if (ticks + secund * FPS + minute * 60 * FPS) % 4 == player.ticks % 4:
+        if (ticks + secund * FPS + minute * 60 * FPS) % (40 // step_p) == player.ticks % (
+                40 // step_p):
             player.uppdate_pos()
             player.uppdate_vector()
             player.uppdate_pos()
-        if (ticks + secund * FPS + minute * 60 * FPS) % 4 == blinky.ticks % 4:
+        if (ticks + secund * FPS + minute * 60 * FPS) % (40 // step_g) == blinky.ticks % (
+                40 // step_g):
             blinky.uppdate_pos()
             blinky.uppdate_vector()
             blinky.uppdate_pos()
-        if (ticks + secund * FPS + minute * 60 * FPS) % 4 == pinky.ticks % 4:
+        if (ticks + secund * FPS + minute * 60 * FPS) % (40 // step_g) == pinky.ticks % (
+                40 // step_g):
             pinky.uppdate_pos()
             pinky.uppdate_vector()
             pinky.uppdate_pos()
-        if (ticks + secund * FPS + minute * 60 * FPS) % 4 == inky.ticks % 4:
+        if (ticks + secund * FPS + minute * 60 * FPS) % (40 // step_g) == inky.ticks % (
+                40 // step_g):
             inky.uppdate_pos()
             inky.uppdate_vector()
             inky.uppdate_pos()
-        if (ticks + secund * FPS + minute * 60 * FPS) % 4 == clyde.ticks % 4:
+        if (ticks + secund * FPS + minute * 60 * FPS) % (40 // step_g) == clyde.ticks % (
+                40 // step_g):
             clyde.uppdate_pos()
             clyde.uppdate_vector()
             clyde.uppdate_pos()
-        if ticks % 2 == 0:
+        if ticks % 4 <= 1:
             player.image = load_image('pac-man1.png')
-        elif ticks % 2 == 1:
+        elif ticks % 4 > 1:
             player.image = load_image('pac-man2.png')
         if player.vector != 180:
             player.image = pygame.transform.rotate(player.image, player.vector)
