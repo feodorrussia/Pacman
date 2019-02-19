@@ -470,6 +470,7 @@ class Player(pygame.sprite.Sprite):
         self.vector = 180
         self.vector1 = self.vector
         self.ticks = 0
+        self.k = 1
         self.x = x
         self.y = y
         self.fl = True
@@ -494,7 +495,12 @@ class Player(pygame.sprite.Sprite):
                 elif i.type == 'energizer':
                     global mode
                     score += pound_score * 5
-                    mode = ['rush', 'scare']
+                    mode = ['rush', 'scare', 10 * FPS]
+        if mode[0] == 'rush' and pygame.sprite.spritecollideany(self, goosts_group):
+            die_goost = pygame.sprite.spritecollide(self, goosts_group, True)
+            for i in die_goost:
+                score += self.k * 200
+                self.k += 1
 
     def uppdate_pos(self):
         if self.vector == 0:
@@ -564,7 +570,7 @@ mode = ['stabil', 'go']
 ticks = 0
 secund = 0
 minute = 0
-wait=0
+wait = 0
 level = load_level('test_level.txt')
 running = True
 pygame.display.flip()
@@ -614,7 +620,7 @@ while running:
             clyde = Clyde(ticks, score)
             player = Player()
             del lives[-1]
-            wait=2*FPS
+            wait = 2 * FPS
             continue
         elif len(lives) == 1 and kill_event:
             f3 = pygame.font.SysFont('serif', 80)
@@ -625,6 +631,8 @@ while running:
             break
         if len(tiles_group) == 0:
             wait = 2 * FPS
+            player.k = 1
+            mode = ['stabil', 'go']
             break
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -677,6 +685,27 @@ while running:
         all_sprites.draw(screen)
         if player.fl:
             player.update()
+        if mode[0] == 'rush' and mode[2] == 0:
+            mode = ['stabil', 'go']
+            player.k = 1
+        if mode[1] == 'scare':
+            mode[2] -= 1
+            f0 = pygame.font.SysFont(None, 20)
+            text0 = f0.render(str(mode[2] // FPS), 0, (255, 0, 0))
+            screen.blit(text0, (740, 50))
+            blinky.image = load_image('rush1.png')
+            pinky.image = load_image('rush1.png')
+            inky.image = load_image('rush1.png')
+            clyde.image = load_image('rush1.png')
+        if mode[0] == 'rush':
+            step_p = 10
+        if mode[0] == 'stabil' and level_n == 3:
+            step_p = 5
+        if mode[1] == 'go':
+            blinky.image = load_image('Blinky.png')
+            pinky.image = load_image('Pinky.png')
+            inky.image = load_image('Inky.png')
+            clyde.image = load_image('Clyde.png')
         if blinky.fl:
             blinky.update()
         if pinky.fl:
@@ -685,8 +714,9 @@ while running:
             inky.update()
         if clyde.fl:
             clyde.update()
-        if pygame.sprite.spritecollideany(player, goosts_group):
+        if mode[0] == 'stabil' and pygame.sprite.spritecollideany(player, goosts_group):
             kill_event = True
+            mode = ['stabil', 'go']
         player_group.draw(screen)
         goosts_group.draw(screen)
 
