@@ -90,7 +90,7 @@ while running:
         for i in range(3 - len(top)):
             top.append(' ')
     if len(top) > 3:
-        top = top[:2]
+        top = top[:3]
     f1 = pygame.font.SysFont('serif', 50)
     text1 = f1.render('1. ' + top[0], 0, (255, 0, 0))
     screen.blit(text1, (150, 180))
