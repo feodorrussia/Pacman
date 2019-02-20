@@ -494,13 +494,30 @@ class Player(pygame.sprite.Sprite):
                     score += pound_score
                 elif i.type == 'energizer':
                     global mode
+                    if level_n == 4:
+                        if self.vector == 0:
+                            self.x = 4
+                            self.y = 15
+                        elif self.vector == 180:
+                            self.x = 14
+                            self.y = 15
+                        elif self.vector == 90:
+                            self.x = 9
+                            self.y = 5
+                            self.vector = 180
+                        elif self.vector == 270:
+                            self.x = 9
+                            self.y = 21
+                            self.vector = 0
+                        self.rect.topleft = (self.x * d_w, self.y * d_h)
                     score += pound_score * 5
                     mode = ['rush', 'scare', 10 * FPS]
                     self.k = 1
-        if mode[0] == 'rush' and pygame.sprite.spritecollideany(self, goosts_group):
+        if mode[0] == 'rush' and pygame.sprite.spritecollideany(self,
+                                                                goosts_group) and level_n != '4':
             die_goost = pygame.sprite.spritecollide(self, goosts_group, True)
             for i in die_goost:
-                score += self.k * 200
+                score += (2 ** self.k) * 100
                 self.k += 1
 
     def uppdate_pos(self):
@@ -787,7 +804,15 @@ while running:
     goosts_group = pygame.sprite.Group()
     clock.tick(FPS)
 end_game = False
+level_n = 4
 while running_bonus:
+    if pause:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                running_level = False
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                pause = False
     all_sprites.draw(screen)
     player, width, height = generate_level(level)
     blinky = Blinky(ticks)
@@ -824,6 +849,13 @@ while running_bonus:
     step_p = 5
     step_g = 10
     while running_level:
+        if pause:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                    running_level = False
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                    pause = False
         if wait != 0:
             clock.tick(FPS)
             wait -= 1
@@ -860,6 +892,8 @@ while running_bonus:
             if event.type == pygame.QUIT:
                 running_bonus = False
                 running_level = False
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                pause = True
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     player.uppdate_vector(180)
