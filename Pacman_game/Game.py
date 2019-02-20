@@ -514,7 +514,7 @@ class Player(pygame.sprite.Sprite):
                     mode = ['rush', 'scare', 10 * FPS]
                     self.k = 1
         if mode[0] == 'rush' and pygame.sprite.spritecollideany(self,
-                                                                goosts_group) and level_n != '4':
+                                                                goosts_group) and level_n != 4:
             die_goost = pygame.sprite.spritecollide(self, goosts_group, True)
             for i in die_goost:
                 score += (2 ** self.k) * 100
