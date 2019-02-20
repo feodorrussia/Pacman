@@ -988,4 +988,6 @@ while running_bonus:
     player_group = pygame.sprite.Group()
     goosts_group = pygame.sprite.Group()
     clock.tick(FPS)
+open('nicknames.txt', 'a').write(': ' + str(score) + '\n')
+pygame.quit()
 os.system('python {}'.format('Title.py'))

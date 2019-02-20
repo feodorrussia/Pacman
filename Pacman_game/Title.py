@@ -24,18 +24,25 @@ def load_image(name, catal, color_key=None):
         image = image.convert_alpha()
     return image
 
+
+def sort():
+    file = sorted(open('nicknames.txt').read().split('\n'))
+    open('nicknames.txt', 'w').write(file)
+
 class Input_nick(QWidget):
     def __init__(self):
         super().__init__()
         self.setGeometry(800, 470, 5, 5)
         self.setWindowTitle('def')
+
     def input(self):
         i, okBtnPressed = QInputDialog.getText(self,
                                                "Введите Ваш nickname",
                                                "Nickname:")
         if okBtnPressed:
-            open('nicknames.txt', 'a').write(i + '\n')
+            open('nicknames.txt', 'a').write(i)
         self.close()
+
 
 class Start_Button(pygame.sprite.Sprite):
     def __init__(self):
@@ -71,7 +78,7 @@ start = Start_Button()
 accout = Personal_account()
 running = True
 app = QApplication(sys.argv)
-def_win= Input_nick()
+def_win = Input_nick()
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -80,9 +87,11 @@ while running:
             if Width - 90 < event.pos[0] < Width - 56 and 160 < event.pos[1] < 225:
                 def_win.show()
                 def_win.input()
-                sys.exit(app.exec_())
             else:
+                running = False
+                pygame.quit()
                 os.system('python {}'.format('Game.py'))
+    sort()
     sprite_logotipe.draw(screen)
     sprite_button.draw(screen)
     sprite_animation.draw(screen)
