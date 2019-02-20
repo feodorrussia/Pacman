@@ -95,10 +95,10 @@ class StartWindow:
         logo = Logo(all_sprites)
         pygame.display.flip()
         screen.fill((255, 255, 255))
-        nickname_input = InputBox((Width - 180) // 2, 2 * Height // 3, 180, 50, text="set_nickname",
+        nickname_input = InputBox(Width - 150, 100, 140, 80, text="personal account",
                                   text_limit=10,
                                   action="nickname_adding")
-        start_game = ButtonBox((Width - 180) // 2, 2 * Height // 3 + 60, 180, 50,
+        start_game = ButtonBox((Width - 360) // 2, 2 * Height // 5, 360, 100,
                                text="start game",
                                text_limit=10,
                                action="start_game")
