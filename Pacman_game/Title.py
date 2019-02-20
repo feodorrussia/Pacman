@@ -26,8 +26,12 @@ def load_image(name, catal, color_key=None):
 
 
 def sort():
-    file = sorted(open('nicknames.txt').read().split('\n'))
-    open('nicknames.txt', 'w').write(file)
+    file = open('nicknames.txt').read().strip().split('\n')
+    st = ''
+    for z, k in sorted([(int(s.split()[1]), s.split()[0]) for s in file if len(s.split()) == 2], reverse=True):
+        st += k + ' ' + str(z) + '\n'
+    open('nicknames_top.txt', 'w').write(st)
+
 
 class Input_nick(QWidget):
     def __init__(self):
@@ -80,6 +84,29 @@ running = True
 app = QApplication(sys.argv)
 def_win = Input_nick()
 while running:
+    sort()
+    top = open('nicknames_top.txt').read().strip('\n').split('\n')
+    if len(top) < 3:
+        for i in range(3 - len(top)):
+            top.append(' ')
+    if len(top) > 3:
+        top = top[:2]
+    f1 = pygame.font.SysFont('serif', 50)
+    text1 = f1.render('1. ' + top[0], 0, (255, 0, 0))
+    screen.blit(text1, (150, 180))
+    sprite_logotipe.draw(screen)
+    f2 = pygame.font.SysFont(None, 30)
+    text2 = f2.render('2. ' + top[1], 0, (0, 0, 255))
+    screen.blit(text2, (250, 250))
+    sprite_logotipe.draw(screen)
+    f3 = pygame.font.SysFont(None, 30)
+    text3 = f3.render('3. ' + top[2], 0, (0, 0, 255))
+    screen.blit(text3, (250, 300))
+    sprite_logotipe.draw(screen)
+    sprite_button.draw(screen)
+    sprite_animation.draw(screen)
+    pygame.display.flip()
+    clock.tick(FPS)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -88,13 +115,7 @@ while running:
                 def_win.show()
                 def_win.input()
             else:
-                running = False
                 pygame.quit()
                 os.system('python {}'.format('Game.py'))
-    sort()
-    sprite_logotipe.draw(screen)
-    sprite_button.draw(screen)
-    sprite_animation.draw(screen)
-    pygame.display.flip()
-    clock.tick(FPS)
+                running = False
 pygame.quit()

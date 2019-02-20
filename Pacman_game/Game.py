@@ -988,6 +988,14 @@ while running_bonus:
     player_group = pygame.sprite.Group()
     goosts_group = pygame.sprite.Group()
     clock.tick(FPS)
-open('nicknames.txt', 'a').write(': ' + str(score) + '\n')
+try:
+    f = open('nicknames.txt').read()
+    s = int(f[len(f) - 1])
+except Exception:
+    file = open('nicknames.txt').read().split(' ')
+    file[-1] = str(score) + '\n'
+    open('nicknames.txt', 'w').write(' '.join(file))
+else:
+    open('nicknames.txt', 'a').write(': ' + str(score) + '\n')
 pygame.quit()
 os.system('python {}'.format('Title.py'))
