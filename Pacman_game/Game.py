@@ -988,3 +988,4 @@ while running_bonus:
     player_group = pygame.sprite.Group()
     goosts_group = pygame.sprite.Group()
     clock.tick(FPS)
+os.system('python {}'.format('Pac-man_title.py'))
