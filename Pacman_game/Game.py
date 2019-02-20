@@ -571,7 +571,7 @@ mode = ['stabil', 'go']
 ticks = 0
 secund = 0
 minute = 0
-wait = 0
+wait = 1 * FPS
 level = load_level('test_level.txt')
 running = True
 end_game = False
@@ -786,6 +786,7 @@ while running:
     player_group = pygame.sprite.Group()
     goosts_group = pygame.sprite.Group()
     clock.tick(FPS)
+end_game = False
 while running_bonus:
     all_sprites.draw(screen)
     player, width, height = generate_level(level)
@@ -796,9 +797,16 @@ while running_bonus:
     running_level = True
     kill_event = False
     if wait != 0:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running_bonus = False
+                running_level = False
         clock.tick(FPS)
         wait -= 1
         continue
+    if wait == 0:
+        if end_game:
+            break
     if deith:
         running_level = False
         for event in pygame.event.get():
@@ -840,7 +848,8 @@ while running_bonus:
             text4 = f4.render("Your score: " + str(score), 0, (255, 255, 0))
             screen.blit(text4, (250, 540))
             pygame.display.flip()
-            deith = True
+            wait = 2 * FPS
+            end_game = True
             break
         if len(tiles_group) == 0:
             wait = 2 * FPS
