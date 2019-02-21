@@ -562,7 +562,6 @@ end_game = False
 pause = False
 running_bonus = False
 pygame.display.flip()
-all_sprites.draw(screen)
 deith = False
 while running:
     if pause:
@@ -577,6 +576,7 @@ while running:
     if wait == 0:
         if end_game:
             break
+    all_sprites.draw(screen)
     player, width, height = generate_level(level)
     blinky = Blinky(ticks)
     pinky = Pinky(ticks, score)
@@ -787,14 +787,23 @@ while running:
     clock.tick(FPS)
 end_game = False
 level_n = 4
+energ = 0
+win = False
 while running_bonus:
+
+    all_sprites = pygame.sprite.Group()
+    tiles_group = pygame.sprite.Group()
+    player_group = pygame.sprite.Group()
+    goosts_group = pygame.sprite.Group()
+    clock.tick(FPS)
     if pause:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                running_bonus = False
                 running_level = False
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 pause = False
+        continue
     all_sprites.draw(screen)
     player, width, height = generate_level(level)
     blinky = Blinky(ticks)
@@ -819,7 +828,7 @@ while running_bonus:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running_bonus = False
-    elif len(tiles_group) == 0:
+    if win:
         f3 = pygame.font.SysFont('serif', 80)
         text3 = f3.render("You're the best!!!", 0, (255, 0, 0))
         screen.blit(text3, (120, 450))
@@ -827,17 +836,20 @@ while running_bonus:
         text4 = f4.render("Your score: " + str(score), 0, (255, 255, 0))
         screen.blit(text4, (250, 540))
         pygame.display.flip()
-        running_level = False
+        wait = 2 * FPS
+        end_game = True
+        continue
     step_p = 5
     step_g = 10
     while running_level:
         if pause:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    running = False
+                    running_bonus = False
                     running_level = False
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                     pause = False
+            continue
         if wait != 0:
             clock.tick(FPS)
             wait -= 1
@@ -866,10 +878,12 @@ while running_bonus:
             end_game = True
             break
         if len(tiles_group) == 0:
-            wait = 2 * FPS
             player.k = 1
             mode = ['stabil', 'go']
+            win = True
             break
+        if energ == 4:
+            step_p = 10
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running_bonus = False
@@ -932,20 +946,26 @@ while running_bonus:
                     if player.vector == 0:
                         player.x = 4
                         player.y = 15
+                        player.vector = 180
+                        player.vector1 = 180
                     elif player.vector == 180:
                         player.x = 14
                         player.y = 15
+                        player.vector = 0
+                        player.vector1 = 0
                     elif player.vector == 90:
                         player.x = 9
-                        player.y = 5
+                        player.y = 21
                         player.vector = 180
+                        player.vector1 = 180
                     elif player.vector == 270:
                         player.x = 9
-                        player.y = 21
+                        player.y = 5
                         player.vector = 0
+                        player.vector1 = 0
+                    energ += 1
                     player.rect.topleft = (player.x * d_w, player.y * d_h)
                     score += pound_score * 5
-                    player.k = 1
         if blinky.fl:
             blinky.update()
         if pinky.fl:
