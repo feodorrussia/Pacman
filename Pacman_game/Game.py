@@ -486,39 +486,6 @@ class Player(pygame.sprite.Sprite):
             self.rect.y -= step_p
         if self.vector == 270:
             self.rect.y += step_p
-        if pygame.sprite.spritecollideany(self, all_sprites):
-            food = pygame.sprite.spritecollide(self, tiles_group, True)
-            for i in food:
-                if i.type == 'pound':
-                    global score
-                    score += pound_score
-                elif i.type == 'energizer':
-                    global mode
-                    if level_n == 4:
-                        if self.vector == 0:
-                            self.x = 4
-                            self.y = 15
-                        elif self.vector == 180:
-                            self.x = 14
-                            self.y = 15
-                        elif self.vector == 90:
-                            self.x = 9
-                            self.y = 5
-                            self.vector = 180
-                        elif self.vector == 270:
-                            self.x = 9
-                            self.y = 21
-                            self.vector = 0
-                        self.rect.topleft = (self.x * d_w, self.y * d_h)
-                    score += pound_score * 5
-                    mode = ['rush', 'scare', 10 * FPS]
-                    self.k = 1
-        if mode[0] == 'rush' and pygame.sprite.spritecollideany(self,
-                                                                goosts_group) and level_n != 4:
-            die_goost = pygame.sprite.spritecollide(self, goosts_group, True)
-            for i in die_goost:
-                score += (2 ** self.k) * 100
-                self.k += 1
 
     def uppdate_pos(self):
         if self.vector == 0:
@@ -734,6 +701,21 @@ while running:
         all_sprites.draw(screen)
         if player.fl:
             player.update()
+        if pygame.sprite.spritecollideany(player, all_sprites):
+            food = pygame.sprite.spritecollide(player, tiles_group, True)
+            for i in food:
+                if i.type == 'pound':
+                    score += pound_score
+                elif i.type == 'energizer':
+                    score += pound_score * 5
+                    mode = ['rush', 'scare', 10 * FPS]
+                    player.k = 1
+        if mode[0] == 'rush' and pygame.sprite.spritecollideany(player,
+                                                                goosts_group):
+            die_goost = pygame.sprite.spritecollide(player, goosts_group, True)
+            for i in die_goost:
+                score += (2 ** player.k) * 100
+                player.k += 1
         if mode[0] == 'rush' and mode[2] == 0:
             mode = ['stabil', 'go']
             player.k = 1
@@ -941,6 +923,29 @@ while running_bonus:
         all_sprites.draw(screen)
         if player.fl:
             player.update()
+        if pygame.sprite.spritecollideany(player, all_sprites):
+            food = pygame.sprite.spritecollide(player, tiles_group, True)
+            for i in food:
+                if i.type == 'pound':
+                    score += pound_score
+                elif i.type == 'energizer':
+                    if player.vector == 0:
+                        player.x = 4
+                        player.y = 15
+                    elif player.vector == 180:
+                        player.x = 14
+                        player.y = 15
+                    elif player.vector == 90:
+                        player.x = 9
+                        player.y = 5
+                        player.vector = 180
+                    elif player.vector == 270:
+                        player.x = 9
+                        player.y = 21
+                        player.vector = 0
+                    player.rect.topleft = (player.x * d_w, player.y * d_h)
+                    score += pound_score * 5
+                    player.k = 1
         if blinky.fl:
             blinky.update()
         if pinky.fl:
