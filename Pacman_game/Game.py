@@ -1017,10 +1017,10 @@ try:
     f = open('nicknames.txt').read()
     s = int(f[len(f) - 1])
 except Exception:
+    open('nicknames.txt', 'a').write(': ' + str(score) + '\n')
+else:
     file = open('nicknames.txt').read().split(' ')
     file[-1] = str(score) + '\n'
     open('nicknames.txt', 'w').write(' '.join(file))
-else:
-    open('nicknames.txt', 'a').write(': ' + str(score) + '\n')
 pygame.quit()
 os.system('python {}'.format('Title.py'))

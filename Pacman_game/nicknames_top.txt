@@ -1,6 +1,7 @@
 Fyodor1: 18995
 Fyodor2: 16190
-Fyofor3: 13610
+Fyodor: 12345
+Fyofor3: 5830
 FYODOR227: 2385
 Fyodor228: 1545
 Fyodor222: 75
