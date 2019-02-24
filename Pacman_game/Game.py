@@ -1015,7 +1015,7 @@ while running_bonus:
     clock.tick(FPS)
 try:
     f = open('nicknames.txt').read()
-    s = int(f[len(f) - 1])
+    s = int(f[len(f) - 2])
 except Exception:
     open('nicknames.txt', 'a').write(': ' + str(score) + '\n')
 else:
