@@ -118,4 +118,8 @@ while running:
                 pygame.quit()
                 os.system('python {}'.format('Game.py'))
                 running = False
+        if event.type == pygame.KEYDOWN:
+            pygame.quit()
+            os.system('python {}'.format('Game.py'))
+            running = False
 pygame.quit()
