@@ -3,17 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="5c26960f-95de-493f-99d3-74d5a7a80103" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Game.py" beforeDir="false" afterPath="$PROJECT_DIR$/Game.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Blinky.png" beforeDir="false" afterPath="$PROJECT_DIR$/data/Blinky.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Clyde.png" beforeDir="false" afterPath="$PROJECT_DIR$/data/Clyde.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Inky.png" beforeDir="false" afterPath="$PROJECT_DIR$/data/Inky.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Pinky.png" beforeDir="false" afterPath="$PROJECT_DIR$/data/Pinky.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/goosts.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/pac-man1.png" beforeDir="false" afterPath="$PROJECT_DIR$/data/pac-man1.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/pac-man2.png" beforeDir="false" afterPath="$PROJECT_DIR$/data/pac-man2.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/pac-man_screen.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/rush1.png" beforeDir="false" afterPath="$PROJECT_DIR$/data/rush1.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/rush2.png" beforeDir="false" afterPath="$PROJECT_DIR$/data/rush2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Title.py" beforeDir="false" afterPath="$PROJECT_DIR$/Title.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/nicknames.txt" beforeDir="false" afterPath="$PROJECT_DIR$/nicknames.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/nicknames_top.txt" beforeDir="false" afterPath="$PROJECT_DIR$/nicknames_top.txt" afterDir="false" />
     </list>
@@ -25,10 +15,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Game.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="263">
+            <state relative-caret-position="24384">
               <caret line="1019" column="62" selection-start-line="1019" selection-start-column="62" selection-end-line="1019" selection-end-column="62" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
@@ -37,11 +27,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Title.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-313">
-              <caret line="92" column="20" selection-start-line="92" selection-start-column="20" selection-end-line="92" selection-end-column="20" />
+            <state relative-caret-position="335">
+              <caret line="123" column="27" selection-start-line="123" selection-start-column="27" selection-end-line="123" selection-end-column="27" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -79,9 +69,9 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/data/test_level.txt" />
-        <option value="$PROJECT_DIR$/Title.py" />
         <option value="$PROJECT_DIR$/nicknames.txt" />
         <option value="$PROJECT_DIR$/Game.py" />
+        <option value="$PROJECT_DIR$/Title.py" />
       </list>
     </option>
   </component>
@@ -96,6 +86,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -107,7 +98,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -253,9 +243,7 @@
     <entry file="file://$PROJECT_DIR$/data/Clyde.png">
       <provider selected="true" editor-type-id="images" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/goosts.jpg">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/data/goosts.jpg" />
     <entry file="file://$PROJECT_DIR$/data/Inky.png">
       <provider selected="true" editor-type-id="images" />
     </entry>
@@ -268,9 +256,7 @@
     <entry file="file://$PROJECT_DIR$/data/pac-man_screen_n.png">
       <provider selected="true" editor-type-id="images" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/pac-man_screen.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/data/pac-man_screen.png" />
     <entry file="file://$PROJECT_DIR$/материал/pacman_labirint.jpg">
       <provider selected="true" editor-type-id="images" />
     </entry>
@@ -284,15 +270,18 @@
     <entry file="file://$PROJECT_DIR$/материал/pacman_labirint2.jpg">
       <provider selected="true" editor-type-id="images" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/Title.py">
+    <entry file="file://$PROJECT_DIR$/Game.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-313">
-          <caret line="92" column="20" selection-start-line="92" selection-start-column="20" selection-end-line="92" selection-end-column="20" />
+        <state relative-caret-position="24384">
+          <caret line="1019" column="62" selection-start-line="1019" selection-start-column="62" selection-end-line="1019" selection-end-column="62" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
         </state>
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nicknames_top.txt">
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/nicknames.txt">
       <provider selected="true" editor-type-id="text-editor">
@@ -301,13 +290,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/nicknames_top.txt">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Game.py">
+    <entry file="file://$PROJECT_DIR$/Title.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="263">
-          <caret line="1019" column="62" selection-start-line="1019" selection-start-column="62" selection-end-line="1019" selection-end-column="62" />
+        <state relative-caret-position="335">
+          <caret line="123" column="27" selection-start-line="123" selection-start-column="27" selection-end-line="123" selection-end-column="27" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
