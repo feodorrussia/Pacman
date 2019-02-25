@@ -126,14 +126,14 @@ class Tile(pygame.sprite.Sprite):
 
 
 class Blinky(pygame.sprite.Sprite):
-    def __init__(self, ticks, start_score=0):
+    def __init__(self, ticks, start_pound=0):
         self.image = load_image('Blinky.png')
         self.type = 'Blinky'
         self.vector = 180
-        self.run = False
+        self.run = True
         self.vectors = list(range(2, -3, -1))
         self.ticks = ticks
-        self.start_score = start_score
+        self.start_pound = start_pound
         self.x = 9
         self.y = 9
         self.act_time = 0
@@ -182,11 +182,11 @@ class Blinky(pygame.sprite.Sprite):
         self.rect.topleft = (self.x * d_w + 1, self.y * d_h + 1)
 
     def uppdate_vector(self):
-        if score - self.start_score < self.act_time * pound_score and not self.run:
+        if self.start_pound - pound < self.act_time and not self.run:
             if not self.fl:
                 self.vector = (180 + self.vector) % 360
                 self.fl = True
-        if score - self.start_score >= self.act_time * pound_score and not self.run:
+        if self.start_pound - pound >= self.act_time and not self.run:
             self.y = 9
             self.rect.y = 9 * d_h + 1
             self.run = True
@@ -218,14 +218,14 @@ class Blinky(pygame.sprite.Sprite):
 
 
 class Pinky(Blinky):
-    def __init__(self, ticks, start_score=0):
+    def __init__(self, ticks, start_pound=0):
         self.image = load_image('Pinky.png')
         self.type = 'Pinky'
         self.vector = 180
         self.run = False
         self.vectors = list(range(2, -3, -1))
         self.ticks = ticks
-        self.start_score = start_score
+        self.start_pound = start_pound
         self.act_time = 5
         self.x = 8
         self.y = 11
@@ -234,14 +234,14 @@ class Pinky(Blinky):
 
 
 class Inky(Blinky):
-    def __init__(self, ticks, start_score=0):
+    def __init__(self, ticks, start_pound=0):
         self.image = load_image('Inky.png')
         self.type = 'Inky'
         self.vector = 180
         self.run = False
         self.vectors = list(range(2, -3, -1))
         self.ticks = ticks
-        self.start_score = start_score
+        self.start_pound = start_pound
         self.act_time = 10
         self.x = 10
         self.y = 11
@@ -250,14 +250,14 @@ class Inky(Blinky):
 
 
 class Clyde(Blinky):
-    def __init__(self, ticks, start_score=0):
+    def __init__(self, ticks, start_pound=0):
         self.image = load_image('Clyde.png')
         self.type = 'Clyde'
         self.vector = 0
         self.run = False
         self.vectors = list(range(2, -3, -1))
         self.ticks = ticks
-        self.start_score = start_score
+        self.start_pound = start_pound
         self.act_time = 15
         self.x = 9
         self.y = 11
@@ -371,14 +371,16 @@ while running:
     if end_game:
         if wait != 0:
             wait -= 1
+            continue
         else:
             break
+    pound = 152
     pygame.display.flip()
     player, width, height = generate_level(level)
     blinky = Blinky(ticks)
-    pinky = Pinky(ticks, score)
-    inky = Inky(ticks, score)
-    clyde = Clyde(ticks, score)
+    pinky = Pinky(ticks, pound)
+    inky = Inky(ticks, pound)
+    clyde = Clyde(ticks, pound)
     screen_sprite.draw(screen)
     all_sprites.draw(screen)
     player_group.draw(screen)
@@ -423,7 +425,6 @@ while running:
         step_g = 10
     if level_n == 3:
         step_p = 5
-    pound=152
     while running_level:
         if pause:
             for event in pygame.event.get():
@@ -442,10 +443,10 @@ while running:
             player_group = pygame.sprite.Group()
             ghosts_group = pygame.sprite.Group()
             dead_ghost = []
-            blinky = Blinky(ticks)
+            blinky = Blinky(ticks, pound)
             pinky = Pinky(ticks, pound)
-            inky = Inky(ticks, score)
-            clyde = Clyde(ticks, score)
+            inky = Inky(ticks, pound)
+            clyde = Clyde(ticks, pound)
             player = Player()
             del lives[-1]
             wait = 2 * FPS
@@ -525,6 +526,7 @@ while running:
             for i in food:
                 if i.type == 'pound':
                     score += pound_score
+                    pound -= 1
                 elif i.type == 'energizer':
                     score += pound_score * 5
                     mode = ['rush', 'scare', 10 * FPS]
@@ -565,14 +567,14 @@ while running:
             elif i[1] == 0:
                 i[1] -= 1
                 if i[0] == 'Blinky':
-                    blinky = Blinky(ticks, score)
+                    blinky = Blinky(ticks, pound)
                 if i[0] == 'Pinky':
-                    pinky = Pinky(ticks, score)
+                    pinky = Pinky(ticks, pound)
                     pinky.rect.topleft = (9 * d_w, 11 * d_h)
                 if i[0] == 'Inky':
-                    inky = Inky(ticks, score)
+                    inky = Inky(ticks, pound)
                 if i[0] == 'Clyde':
-                    clyde = Clyde(ticks, score)
+                    clyde = Clyde(ticks, pound)
         dead_ghost = list(filter(lambda x: x[1] >= 0, dead_ghost))
         if blinky.fl:
             blinky.update()
@@ -633,12 +635,13 @@ while running_bonus:
             wait -= 1
         else:
             break
+    pound = 152
     pygame.display.flip()
     player, width, height = generate_level(level)
-    blinky = Blinky(ticks)
-    pinky = Pinky(ticks, score)
-    inky = Inky(ticks, score)
-    clyde = Clyde(ticks, score)
+    blinky = Blinky(ticks, pound)
+    pinky = Pinky(ticks, pound)
+    inky = Inky(ticks, pound)
+    clyde = Clyde(ticks, pound)
     screen_sprite.draw(screen)
     all_sprites.draw(screen)
     player_group.draw(screen)
@@ -706,9 +709,9 @@ while running_bonus:
             player_group = pygame.sprite.Group()
             ghosts_group = pygame.sprite.Group()
             blinky = Blinky(ticks)
-            pinky = Pinky(ticks, score)
-            inky = Inky(ticks, score)
-            clyde = Clyde(ticks, score)
+            pinky = Pinky(ticks, pound)
+            inky = Inky(ticks, pound)
+            clyde = Clyde(ticks, pound)
             player = Player()
             del lives[-1]
             wait = 2 * FPS
