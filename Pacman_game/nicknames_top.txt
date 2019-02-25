@@ -2,7 +2,4 @@ Fyodor1: 18995
 Fyodor2: 16190
 Fyodor: 12345
 Fyofor3: 5830
-*****: 2405
-FYODOR227: 2385
-Fyodor228: 1545
-Fyodor222: 75
+Alex: 3930
