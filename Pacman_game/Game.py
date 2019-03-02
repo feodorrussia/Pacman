@@ -366,8 +366,8 @@ pause = False
 running_bonus = False
 pygame.display.flip()
 deith = False
-dead_ghost = []
 while running:
+    dead_ghost = []
     if end_game:
         if wait != 0:
             wait -= 1
@@ -404,11 +404,6 @@ while running:
         continue
     running_level = True
     kill_event = False
-    if deith:
-        running_level = False
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
     if level_n == 4:
         f3 = pygame.font.SysFont('serif', 80)
         text3 = f3.render("You win!!!", 0, (255, 0, 0))
@@ -418,7 +413,6 @@ while running:
         screen.blit(text4, (250, 540))
         pygame.display.flip()
         running_level = False
-        wait = 3 * FPS
         end_game = True
         running_bonus = True
     if level_n == 2:
@@ -460,12 +454,14 @@ while running:
             screen.blit(text4, (250, 540))
             pygame.display.flip()
             wait = 3 * FPS
+            dead_ghost = []
             end_game = True
             break
         if len(tiles_group) == 0:
             wait = 2 * FPS
             player.k = 1
             level_n += 1
+            dead_ghost = []
             mode = ['stabil', 'go']
             break
         for event in pygame.event.get():
@@ -629,6 +625,7 @@ end_game = False
 level_n = 4
 energ = 0
 win = False
+wait=3*FPS
 while running_bonus:
     if end_game:
         if wait != 0:
@@ -646,9 +643,9 @@ while running_bonus:
     all_sprites.draw(screen)
     player_group.draw(screen)
     ghosts_group.draw(screen)
-    f2 = pygame.font.SysFont('serif', 75)
-    text2 = f2.render("BONUS LEVEL", 0, (255, 255, 0))
-    screen.blit(text2, (250, 30))
+    f2 = pygame.font.SysFont('serif', 60)
+    text2 = f2.render("BONUS LEVEL", 0, (255, 0, 0))
+    screen.blit(text2, (185, 50))
     pygame.display.flip()
     clock.tick(FPS)
     if pause:
@@ -673,11 +670,6 @@ while running_bonus:
         clock.tick(FPS)
         wait -= 1
         continue
-    if deith:
-        running_level = False
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running_bonus = False
     if win:
         f3 = pygame.font.SysFont('serif', 80)
         text3 = f3.render("You're the best!!!", 0, (255, 0, 0))

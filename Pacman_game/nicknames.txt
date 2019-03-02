@@ -1,5 +1,1 @@
-Fyodor1: 18995
-Fyodor2: 16190
-Fyofor3: 5830
-Fyodor: 12345
-Alex: 3930
+***
