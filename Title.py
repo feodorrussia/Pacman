@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import *
 import pygame
 
 
-FPS = 16
+FPS = 30
 Width = 770
 Height = 890
 
@@ -64,20 +64,16 @@ class Personal_account(pygame.sprite.Sprite):
         self.image = load_image("личный кабинет.png", 'кнопки')
         self.rect = self.image.get_rect()
         self.rect.x = Width - 90
-        self.rect.y = 160
 
-class Moving_object(pygame.sprite.Sprite):
-    def __init__(self, sprite_group, photo, x, y):
-        super().__init__(sprite_group)
-        self.image = load_image(photo, "data/1/")
+
+class Animation(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__(sprite_button)
+        self.image = load_image("animation 009.jpg", "data/animation")
         self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
+        self.rect.x = 25
+        self.rect.y = 500
 
-    def update(self, dx, dy):
-        self.rect.x += dx
-        self.rect.y += dy
-        
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -87,58 +83,20 @@ sprite_button = pygame.sprite.Group()
 sprite_logotipe = pygame.sprite.Group()
 sprite_animation = pygame.sprite.Group()
 sprite = pygame.sprite.Sprite()
-
-sprite_heroes = pygame.sprite.Group()
-player = Moving_object(sprite_heroes, 'pac-man1.png', -10+300, 720)
-Blinky = Moving_object(sprite_heroes, 'Blinky.png', -60+300, 720)
-Pinky = Moving_object(sprite_heroes, 'Pinky.png', -110+300, 720)
-Clyde = Moving_object(sprite_heroes, 'Clyde.png', -160+300, 720)
-Inky = Moving_object(sprite_heroes, 'Inky.png', -210+300, 720)
-
 sprite.image = load_image("logo3.jpg", 'анимация')
 sprite.rect = sprite.image.get_rect()
 sprite.rect.topleft = ((Width - 500) // 2, 20)
 sprite_logotipe.add(sprite)
 start = Start_Button()
 accout = Personal_account()
+animation = Animation()
 running = True
 app = QApplication(sys.argv)
 def_win = Input_nick()
-ticks = 0
-sprite_heroes.draw(screen)
-direction = True
+temp = -1
 while running:
-    
-    if direction:
-        player.update(1, 0)
-        Blinky.update(1, 0)
-        Pinky.update(1, 0)
-        Clyde.update(1, 0)
-        Inky.update(1, 0)
-
-        if player.rect.x > 410:
-            direction = False
-        
-    else:
-        player.update(-1, 0)
-        Blinky.update(-1, 0)
-        Pinky.update(-1, 0)
-        Clyde.update(-1, 0)
-        Inky.update(-1, 0)
-    
-        if player.rect.x < 210:
-            direction = True
-    
-        
-    
-    sprite_heroes.draw(screen)
-    pygame.display.flip()
-    
-    if ticks % 4 <= 1:
-        player.image = load_image('pac-man1.png', "data/1/")
-    elif ticks % 4 > 1:
-        player.image = load_image('pac-man2.png', "data/1/")
-        
+    temp = (temp + 1) % 870 + 1
+    animation.image = load_image("animation " + "0" * (3 - len(str(temp))) + str(temp) + ".jpg", "data/animation")
     sort()
     top = open('nicknames_top.txt').read().strip('\n').split('\n')
     if len(top) < 3:
@@ -159,7 +117,7 @@ while running:
     screen.blit(text3, (250, 300))
     sprite_logotipe.draw(screen)
     sprite_button.draw(screen)
-    sprite_animation.draw(screen)   
+    sprite_animation.draw(screen)
     pygame.display.flip()
     clock.tick(FPS)
     for event in pygame.event.get():
@@ -177,7 +135,4 @@ while running:
             pygame.quit()
             os.system('python {}'.format('Game.py'))
             running = False
-    ticks += 1
-    if ticks == FPS:
-        ticks = 0
 pygame.quit()
