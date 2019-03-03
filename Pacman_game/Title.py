@@ -4,7 +4,6 @@ from PyQt5.QtWidgets import QInputDialog
 from PyQt5.QtWidgets import *
 import pygame
 
-
 FPS = 30
 Width = 770
 Height = 890
@@ -29,7 +28,8 @@ def load_image(name, catal, color_key=None):
 def sort():
     file = open('nicknames.txt').read().strip().split('\n')
     st = ''
-    for z, k in sorted([(int(s.split()[1]), s.split()[0]) for s in file if len(s.split()) == 2], reverse=True):
+    for z, k in sorted([(int(s.split()[1]), s.split()[0]) for s in file if len(s.split()) == 2],
+                       reverse=True):
         st += k + ' ' + str(z) + '\n'
     open('nicknames_top.txt', 'w').write(st)
 
@@ -49,6 +49,11 @@ class Input_nick(QWidget):
         self.close()
 
 
+class Help_win:
+    def show(self):
+        os.system('start {}'.format('C:/Users/VV/Documents/Pacman/Pacman_game/help.txt'))
+
+
 class Start_Button(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__(sprite_button)
@@ -65,6 +70,15 @@ class Personal_account(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = Width - 90
         self.rect.y = 160
+
+
+class Help(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__(sprite_button)
+        self.image = load_image("Справка.png", 'кнопки')
+        self.rect = self.image.get_rect()
+        self.rect.x = Width - 90
+        self.rect.y = 240
 
 
 class Animation(pygame.sprite.Sprite):
@@ -91,13 +105,16 @@ sprite_logotipe.add(sprite)
 start = Start_Button()
 accout = Personal_account()
 animation = Animation()
+help = Help()
 running = True
 app = QApplication(sys.argv)
 def_win = Input_nick()
+def_win2 = Help_win()
 temp = -1
 while running:
     temp = (temp + 1) % 870 + 1
-    animation.image = load_image("animation " + "0" * (3 - len(str(temp))) + str(temp) + ".jpg", "data/animation")
+    animation.image = load_image("animation " + "0" * (3 - len(str(temp))) + str(temp) + ".jpg",
+                                 "data/animation")
     sort()
     top = open('nicknames_top.txt').read().strip('\n').split('\n')
     if len(top) < 3:
@@ -128,6 +145,8 @@ while running:
             if Width - 90 < event.pos[0] < Width - 56 and 160 < event.pos[1] < 225:
                 def_win.show()
                 def_win.input()
+            if Width - 90 < event.pos[0] < Width - 50 and 240 < event.pos[1] < 280:
+                def_win2.show()
             else:
                 pygame.quit()
                 os.system('python {}'.format('Game.py'))
