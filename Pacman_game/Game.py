@@ -1,5 +1,4 @@
 import os
-import sys
 import pygame
 from random import choice as rand
 
@@ -18,11 +17,6 @@ d_h = 40
 
 screen = pygame.display.set_mode((Width, Height))
 clock = pygame.time.Clock()
-
-
-def terminate():
-    pygame.quit()
-    sys.exit()
 
 
 def randomase(vectors):
@@ -625,7 +619,7 @@ end_game = False
 level_n = 4
 energ = 0
 win = False
-wait=3*FPS
+wait = 3 * FPS
 while running_bonus:
     if end_game:
         if wait != 0:
