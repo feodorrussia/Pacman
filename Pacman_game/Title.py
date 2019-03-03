@@ -51,7 +51,7 @@ class Input_nick(QWidget):
 
 class Help_win:
     def show(self):
-        os.system('start {}'.format('C:/Users/VV/Documents/Pacman/Pacman_game/help.txt'))
+        os.system('start {}'.format('help.txt'))
 
 
 class Start_Button(pygame.sprite.Sprite):
@@ -147,12 +147,13 @@ while running:
                 def_win.input()
             if Width - 90 < event.pos[0] < Width - 50 and 240 < event.pos[1] < 280:
                 def_win2.show()
-            else:
-                pygame.quit()
-                os.system('python {}'.format('Game.py'))
-                running = False
-        if event.type == pygame.KEYDOWN:
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            pygame.quit()
+            os.system('python {}'.format('Game.py'))
+            running = False
+        elif event.type == pygame.KEYDOWN:
             pygame.quit()
             os.system('python {}'.format('Game.py'))
             running = False
 pygame.quit()
+def_win.close()
