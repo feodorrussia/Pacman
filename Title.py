@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QInputDialog
 from PyQt5.QtWidgets import *
 import pygame
 
+
 FPS = 30
 Width = 770
 Height = 890
@@ -28,8 +29,7 @@ def load_image(name, catal, color_key=None):
 def sort():
     file = open('nicknames.txt').read().strip().split('\n')
     st = ''
-    for z, k in sorted([(int(s.split()[1]), s.split()[0]) for s in file if len(s.split()) == 2],
-                       reverse=True):
+    for z, k in sorted([(int(s.split()[1]), s.split()[0]) for s in file if len(s.split()) == 2], reverse=True):
         st += k + ' ' + str(z) + '\n'
     open('nicknames_top.txt', 'w').write(st)
 
@@ -64,7 +64,6 @@ class Personal_account(pygame.sprite.Sprite):
         self.image = load_image("личный кабинет.png", 'кнопки')
         self.rect = self.image.get_rect()
         self.rect.x = Width - 90
-        self.rect.y = 160
 
 
 class Animation(pygame.sprite.Sprite):
@@ -97,8 +96,7 @@ def_win = Input_nick()
 temp = -1
 while running:
     temp = (temp + 1) % 870 + 1
-    animation.image = load_image("animation " + "0" * (3 - len(str(temp))) + str(temp) + ".jpg",
-                                 "data/animation")
+    animation.image = load_image("animation " + "0" * (3 - len(str(temp))) + str(temp) + ".jpg", "data/animation")
     sort()
     top = open('nicknames_top.txt').read().strip('\n').split('\n')
     if len(top) < 3:
