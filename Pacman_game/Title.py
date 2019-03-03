@@ -4,7 +4,8 @@ from PyQt5.QtWidgets import QInputDialog
 from PyQt5.QtWidgets import *
 import pygame
 
-FPS = 16
+
+FPS = 30
 Width = 770
 Height = 890
 
@@ -66,6 +67,15 @@ class Personal_account(pygame.sprite.Sprite):
         self.rect.y = 160
 
 
+class Animation(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__(sprite_button)
+        self.image = load_image("animation 009.jpg", "data/animation")
+        self.rect = self.image.get_rect()
+        self.rect.x = 25
+        self.rect.y = 500
+
+
 pygame.init()
 clock = pygame.time.Clock()
 size = 770, 890
@@ -80,10 +90,14 @@ sprite.rect.topleft = ((Width - 500) // 2, 20)
 sprite_logotipe.add(sprite)
 start = Start_Button()
 accout = Personal_account()
+animation = Animation()
 running = True
 app = QApplication(sys.argv)
 def_win = Input_nick()
+temp = -1
 while running:
+    temp = (temp + 1) % 870 + 1
+    animation.image = load_image("animation " + "0" * (3 - len(str(temp))) + str(temp) + ".jpg", "data/animation")
     sort()
     top = open('nicknames_top.txt').read().strip('\n').split('\n')
     if len(top) < 3:
