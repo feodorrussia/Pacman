@@ -64,7 +64,7 @@ class Personal_account(pygame.sprite.Sprite):
         self.image = load_image("личный кабинет.png", 'кнопки')
         self.rect = self.image.get_rect()
         self.rect.x = Width - 90
-
+        self.rect.y = 160
 
 class Animation(pygame.sprite.Sprite):
     def __init__(self):
